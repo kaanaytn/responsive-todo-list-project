@@ -78,16 +78,27 @@ function deleteItem(e){
             if(confirm('Are you sure you want to delete this item?')){
             // console.log(e.target);
             e.target.parentElement.parentElement.remove();
+            deleteTodoFromStorage(e.target.parentElement.parentElement.textContent);
         }}
     e.preventDefault();
 }
 
+function deleteTodoFromStorage(deletetodo){
+    let todos = getItemsFromLS();
+
+    todos.forEach(function(todo, index){
+        if(todo === deletetodo){
+            todos.splice(index, 1);
+        }
+    });
+    localStorage.setItem("todos", JSON.stringify(todos));
+}
+
 function deleteAllItems(e){
     if(confirm("Are you sure you want to delete all items?")){
-        TaskList.childNodes.forEach(function(item){
-            if(item.nodeType === 1){
-                item.remove();
-            }
-        })
+        while(TaskList.firstChild){
+            TaskList.removeChild(TaskList.firstChild);
+        }
     }
+    localStorage.clear();
 }
