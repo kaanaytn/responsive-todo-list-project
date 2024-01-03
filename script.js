@@ -5,7 +5,7 @@ const input = document.querySelector('#txtTaskName');
 const btnAddNewTask = document.querySelector('#btnAddNewTask');
 const btnDeleteAll = document.querySelector('#btnDeleteAll');
 const TaskList = document.querySelector('#task-list');
-const items = ["Todo 1","Todo 2","Todo 3","Todo 4"];
+let todos;
 
 loadItems();
 
@@ -21,15 +21,31 @@ function eventListeners(){
 
 
 function loadItems(){
-    items.forEach(function(item){
+    todos = getItemsFromLS();
+    todos.forEach(function(item){
         createItem(item);
     })
 }
 
-function createItem(text){
+function getItemsFromLS(){
+    if(localStorage.getItem("todos") === null){
+        todos = [];
+    }else{
+        todos = JSON.parse(localStorage.getItem("todos"));
+    }
+    return todos;
+}
+
+function setItemToLS(newTodo){
+    todos = getItemsFromLS();
+    todos.push(newTodo);
+    localStorage.setItem("todos",JSON.stringify(todos));
+}
+
+function createItem(newTodo){
     const li = document.createElement("li");
     li.className = "list-group-item list-group-item-secondary";
-    li.appendChild(document.createTextNode(text));
+    li.appendChild(document.createTextNode(newTodo));
 
     const a = document.createElement("a");
     a.classList = "delete-item float-right";
@@ -49,6 +65,8 @@ function addNewItem(e){
     }
 
     createItem(input.value);
+
+    setItemToLS(input.value);
 
     input.value = "";
 
